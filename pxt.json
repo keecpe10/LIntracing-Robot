@@ -1,0 +1,29 @@
+{
+    "name": "หุ่นยนต์เดินตามเส้น สอน V1",
+    "description": "",
+    "dependencies": {
+        "core": "*",
+        "radio": "*",
+        "microphone": "*",
+        "pxt-PTKidsBIT-IoT": "github:ibuilds/pxt-ptkidsbit-iot#v2.1.3",
+        "iBIT": "github:emwta/pxt-ibit#v4.0.10"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md",
+        "custom.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "5.0.12",
+        "pxt": "5.15.10",
+        "targetId": "microbit"
+    },
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "blocksprj"
+}
