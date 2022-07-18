@@ -60,6 +60,54 @@ enum LineRobotCrossDirec {
     CrossRight
 }
 
+
+/**
+  * Enumeration of Servo.
+  */
+enum LineRobotServo {
+    //% block="1"
+    SV1,
+    //% block="2"
+    SV2
+}
+
+/**
+  * Enumeration of Servo.
+  */
+enum LineRobotServoUpDown {
+    //% block="ยก"
+    Up,
+    //% block="วาง"
+    Down
+}
+
+
+/**
+  * Enumeration of Servo.
+  */
+enum LineRobotServoKeeper {
+    //% block="ยก"
+    Up,
+    //% block="วาง"
+    Down,
+    //% block="จับ"
+    Keep,
+    //% block="ปล่อย"
+    Leave
+}
+
+
+/**
+  * Enumeration of Servo.
+  */
+enum LineRobotServoKeepLeave {
+    //% block="จับ"
+    Keep,
+    //% block="ปล่อย"
+    Leave
+}
+
+
 /**
  * Custom blocks /f23c monster /f2d6 นักบินอวกาศ /f2dd
  */
@@ -232,23 +280,23 @@ namespace LineRobot {
       * @param speed percent of maximum speed, eg: 800
       */
     //% help=math/map weight=10 blockGap=8
-    //% blockId=LineRobot_วิ่งตามเส้นแล้วเจอเส้นตัด block="วิ่งตามเส้นแล้วเจอเส้นตัด ด้วยความเร็ว %speed|KP %kp|KD %kd"
+    //% blockId=LineRobot_วิ่งตามเส้นแล้วเจอเส้นตัด block="วิ่งตามเส้นแล้วเจอเส้นตัด ด้วยความเร็ว %speed|KP %kp|KD %kd |ความเร็วแตะเส้น %speed_jc"
     //% speed.min=0 speed.max=800
     //% inlineInputMode=inline
-    export function วิ่งตามเส้นแล้วเจอเส้นตัด(speed: number, kp: number, kd: number): void {
-        JC(speed, kp, kd)
+    export function วิ่งตามเส้นแล้วเจอเส้นตัด(speed: number, kp: number, kd: number, speed_jc: number): void {
+        JC(speed, kp, kd, speed_jc)
         //while (pins.analogReadPin(AnalogPin.P0) < ValCrossLeft && pins.analogReadPin(AnalogPin.P1) < ValCrossRight){
         //    track_line(200, kp, kd)
         //}
         หยุดมอเตอร์_เป็นเวลา(10)
     }
-    function JC(speed: number, kp: number, kd: number): void {
+    function JC(speed: number, kp: number, kd: number, speed_jc: number): void {
         while (getJC() == 0) {
             track_line(speed, kp, kd)
         }
         หยุดมอเตอร์_เป็นเวลา(10)
         while (pins.analogReadPin(AnalogPin.P0) < ValCrossLeft && pins.analogReadPin(AnalogPin.P1) < ValCrossRight) {
-            track_line(200, kp, kd)
+            track_line(speed_jc, kp, kd)
         }
         หยุดมอเตอร์_เป็นเวลา(10)
     }
@@ -722,6 +770,58 @@ namespace LineRobot {
             pins.analogWritePin(AnalogPin.P14, left_speed)
             pins.digitalWritePin(DigitalPin.P15, 1)
             pins.analogWritePin(AnalogPin.P16, right_speed)
+        }
+    }
+
+    /**
+     * Control ServoKeeper
+     * @param Degree servo degree 0-180, eg: 90
+     */
+    //% blockId="LineRobot_ServoKeeper" block="มือจับ %LineRobotServo"
+    //% Degree.min=0 Degree.max=180
+    //% weight=75
+    export function ServoKeeper(Servo: LineRobotServoKeeper): void {
+        if (Servo == LineRobotServoKeeper.Up) {
+            pins.servoWritePin(AnalogPin.P8, 160)
+        }
+        if (Servo == LineRobotServoKeeper.Down) {
+            pins.servoWritePin(AnalogPin.P8, 50)
+        }
+        if (Servo == LineRobotServoKeeper.Keep) {
+            pins.servoWritePin(AnalogPin.P12, 100)
+        }
+        if (Servo == LineRobotServoKeeper.Leave) {
+            pins.servoWritePin(AnalogPin.P12, 0)
+        }
+    }
+
+    /**
+     * Control Servo 1 or 2 set degree between 0 - 180
+     * @param Degree servo degree 0-180, eg: 90
+     */
+    //% blockId="LineRobot_Servo" block="Servo %LineRobotServo|Degree %Degree"
+    //% Degree.min=0 Degree.max=180
+    //% weight=75
+    function Servo(Servo: LineRobotServo, Degree: number): void {
+        if (Servo == LineRobotServo.SV1) {
+            pins.servoWritePin(AnalogPin.P8, Degree)
+        }
+        if (Servo == LineRobotServo.SV2) {
+            pins.servoWritePin(AnalogPin.P12, Degree)
+        }
+    }
+
+    /**
+    * Control Servo 1 or 2 set to freedom
+    */
+    //% blockId="LineRobot_ServoStop" block="Servo Stop %LineRobotServo"
+    //% weight=70
+    function ServoStop(Servo: LineRobotServo): void {
+        if (Servo == LineRobotServo.SV1) {
+            pins.servoSetPulse(AnalogPin.P8, 0)
+        }
+        if (Servo == LineRobotServo.SV2) {
+            pins.servoSetPulse(AnalogPin.P12, 0)
         }
     }
 
